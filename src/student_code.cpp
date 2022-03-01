@@ -159,7 +159,86 @@ namespace CGL
     // TODO Part 5.
     // This method should split the given edge and return an iterator to the newly inserted vertex.
     // The halfedge of this vertex should point along the edge that was split, rather than the new edges.
-    return VertexIter();
+    HalfedgeIter h0 = e0->halfedge();
+    HalfedgeIter h3 = h0->twin();
+
+    HalfedgeIter h1 = h0->next();
+    HalfedgeIter h4 = h3->next();
+
+    HalfedgeIter h2 = h1->next();
+    HalfedgeIter h5 = h4->next();
+
+    FaceIter f0 = h0->face();
+    FaceIter f1 = h3->face();
+
+    VertexIter v0 = h0->vertex();
+    VertexIter v1 = h1->vertex();
+    VertexIter v2 = h5->vertex();
+    VertexIter v3 = h2->vertex();
+
+    EdgeIter e1 = h5->edge();
+    EdgeIter e2 = h4->edge();
+    EdgeIter e3 = h2->edge();
+    EdgeIter e4 = h1->edge();
+
+    //new elements
+    EdgeIter e5 = newEdge();
+    EdgeIter e6 = newEdge();
+    EdgeIter e7 = newEdge();
+
+    FaceIter f2 = newFace();
+    FaceIter f3 = newFace();
+
+    VertexIter v4 = newVertex();
+
+    HalfedgeIter h10 = newHalfedge();
+    HalfedgeIter h11 = newHalfedge();
+    HalfedgeIter h12 = newHalfedge();
+    HalfedgeIter h13 = newHalfedge();
+    HalfedgeIter h14 = newHalfedge();
+    HalfedgeIter h15 = newHalfedge();
+
+    //vertex
+    v4->position = (v0->position + v1->position)/ 2.0;
+    v4->halfedge() = h0;
+
+    //set edge elements
+    e5->halfedge() = h13;
+    e6->halfedge() = h15;
+    e7->halfedge() = h10;
+
+    //set face elements;
+    f0->halfedge() = h0;
+    f1->halfedge() = h13;
+    f2->halfedge() = h12;
+    f3->halfedge() = h15;
+
+    //set halfedge elements
+    h0->setNeighbors(h1, h3, v4, e0, f0);
+
+    h1->setNeighbors(h10, h1->twin(), v1, e4, f0);
+
+    h2->setNeighbors(h12, h2->twin(), v3, e3, f2);
+
+    h3->setNeighbors(h13, h0, v1, e0, f1);
+
+    h4->setNeighbors(h14, h4->twin(), v0, e2, f3);
+
+    h5->setNeighbors(h3, h5->twin(), v2, e1, f1);
+
+    h10->setNeighbors(h0, h11, v3, e7, f0);
+
+    h11->setNeighbors(h2, h10, v4, e7, f2);
+
+    h12->setNeighbors(h11, h15, v0, e6, f2);
+
+    h13->setNeighbors(h5, h14, v4, e5, f1);
+
+    h14->setNeighbors(h15, h13, v2, e5, f3);
+
+    h15->setNeighbors(h4, h12, v4, e6, f3);
+
+    return v4;
   }
 
 
