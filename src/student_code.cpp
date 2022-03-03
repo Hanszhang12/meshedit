@@ -104,7 +104,7 @@ namespace CGL
   {
     // TODO Part 4.
     // This method should flip the given edge and return an iterator to the flipped edge.
-    if (e0->isBoundary()) {
+    if (e0->halfedge()->face()->isBoundary() || e0->halfedge()->twin()->face()->isBoundary()) {
       return e0;
     }
     HalfedgeIter h0 = e0->halfedge();
@@ -159,6 +159,9 @@ namespace CGL
     // TODO Part 5.
     // This method should split the given edge and return an iterator to the newly inserted vertex.
     // The halfedge of this vertex should point along the edge that was split, rather than the new edges.
+    if (e0->halfedge()->face()->isBoundary() || e0->halfedge()->twin()->face()->isBoundary()) {
+      return e0->halfedge()->vertex();
+    }
     HalfedgeIter h0 = e0->halfedge();
     HalfedgeIter h3 = h0->twin();
 
@@ -263,6 +266,22 @@ namespace CGL
     // 4. Flip any new edge that connects an old and new vertex.
 
     // 5. Copy the new vertex positions into final Vertex::position.
+
+    EdgeIter e = mesh.edgesBegin();
+
+    while (e != mesh.edgesEnd()) {
+      EdgeIter nextEdge = e;
+      nextEdge++;
+      VertexIter v = mesh.newVertex();
+
+      Vector3D newPos = (e->halfedge()->vertex()->position + e->halfedge()->next()->vertex()->position)/ 2.0;
+      v->newPosition = newPos;
+
+      e = nextEdge;
+    }
+
+
+
 
   }
 }
